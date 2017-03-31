@@ -2,7 +2,7 @@
 #   发送短信至指定手机号码
 #
 # Dependencies:
-#   "twilio": "<module version>"
+#   "twilio": "^2.11.1"
 #
 # Configuration:
 #   TWILIO_SID
