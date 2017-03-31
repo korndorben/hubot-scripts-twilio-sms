@@ -1,22 +1,38 @@
-# Description
-#   send sms by twilio
+# Description:
+#   发送短信至指定手机号码
+#
+# Dependencies:
+#   "twilio": "<module version>"
 #
 # Configuration:
-#   LIST_OF_ENV_VARS_TO_SET
+#   TWILIO_SID
+#   TWILIO_TOKEN
+#   TWILIO_SOURCEPHONENUMBER
 #
 # Commands:
-#   hubot hello - <what the respond trigger does>
-#   orly - <what the hear trigger does>
-#
-# Notes:
-#   <optional notes required for the script>
+#   hubot sms targetphonenumber#sms-content
 #
 # Author:
 #   korndorben
 
-module.exports = (robot) ->
-  robot.respond /hello/, (res) ->
-    res.reply "hello!"
+accountSid = process.env.TWILIO_SID
+authToken = process.env.TWILIO_TOKEN
+fromPhonenumber = process.env.TWILIO_SOURCEPHONENUMBER
 
-  robot.hear /orly/, (res) ->
-    res.send "yarly"
+client = require('twilio')(accountSid, authToken);
+
+module.exports = (robot) ->
+    robot.respond /sms(?:\s+(.*))?$/i, (msg) ->
+        console.log msg
+        filter = msg.match[1]
+        phonenumber = filter.split('#')[0]
+        content = filter.split('#')[1]
+        if filter
+            client.messages.create({
+                to: phonenumber,
+                from: fromPhonenumber,
+                body: content,
+            },(err, message) =>
+                msg.reply message.sid
+            );
+        return
